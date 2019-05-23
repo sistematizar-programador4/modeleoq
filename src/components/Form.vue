@@ -1,40 +1,65 @@
 <template>
   <v-form v-model="valid">  
-    <v-container>
+    <v-container fluid>
       <v-layout>
         <v-flex xs12 md4 >
           <v-text-field
-            v-model="R"
-            label="Demanda (Unidades por año)"
+            v-model="P"
+            label="Tasa de Producción (Unidades por dia)"
             required
           ></v-text-field>
         </v-flex>
-
         <v-flex xs12 md4>
           <v-text-field
-            v-model="S"
-            label="Costo de emitir una orden"
+            v-model="D"
+            label="Demanda (Unidades por dia)"
             required
           ></v-text-field>
         </v-flex>
-
         <v-flex xs12 md4>
           <v-text-field
-            v-model="C"
-            label="Costo de mantener en inventario"
+            v-model="Q"
+            label="Cantidad de producción (Unidades por dia)"
             required
           ></v-text-field>
         </v-flex>
         <v-flex xs12 md4>
           <v-text-field
             v-model="L"
-            label="Lead Time"
+            label="Tiempo guia (Unidades por dia)"
             required
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs12 md4>
+          <v-text-field
+            v-model="K"
+            label="Costo de organización (Por corrida prod)"
+            required
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs12 md4>
+          <v-text-field
+            v-model="C"
+            label="Valor producto (Por Unidad)"
+            required
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs12 md4>
+          <v-text-field
+            v-model="i"
+            label="Tasa de transferencia (Unidades por dia)"
+            required
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs12 md4>
+          <v-text-field
+            v-model="H"
+            label="Costo de conservación"            
           ></v-text-field>
         </v-flex>
       </v-layout>
     <v-flex xs12 md>
-        <v-btn color="warning" @click="modelEOQ()">Generar EOQ</v-btn>
+        <v-btn color="warning" @click="modelPOQ()">Generar POQ</v-btn>
     </v-flex>
     </v-container>
     <v-container>
@@ -47,10 +72,14 @@
   export default {
     data: () => ({
       valid: false,
-        R: '',
-        S: '',
-        C: '',
+        P: '',
+        D: '',
+        Q: '',
         L: '',
+        K: '',
+        C: '',
+        i: '',
+        H: '',
         chartOptions: {
             chart: {
                 id: 'vuechart-example',
@@ -66,27 +95,36 @@
     }),
 
     methods: {
-        modelEOQ(){
-            var demanda = this.R;
-            var costo = this.S;
-            var mantenimiento = this.C;
-            var lead = this.L;
-            var eoq = Math.round(Math.sqrt((2*demanda*costo)/mantenimiento));
-            var demanda_dia = demanda/365;
-            var rop =  Math.round(demanda_dia * lead)
-            var data = [eoq,0,eoq,0] 
-            var axis = [0,lead,(parseInt(lead)+1),lead*2]
-            this.chartOptions = {
-                xaxis: {
-                    categories:axis
-                }
-            };
-            this.series = [{
-            data: data
-            }]
-            console.log(axis)
-            console.log(data)
-        }
+      modelPOQ(){
+        let tasaProduccion = this.P;
+        let demanda = this.D;
+        let cantidadProduccion = this.Q;
+        let tiempoGuia = this.T;
+        let costoOrganizacion = this.K;
+        let valorProducto = this.C;
+        let tasaTransferencia = this.i;
+        let costoConservacion = this.H;
+        this.H = tasaTransferencia * valorProducto;
+        let tiempoCiclo = cantidadProduccion/tasaProduccion
+        // let costo = this.S;
+        // let mantenimiento = this.C;
+        // let lead = this.L;          
+        // let eoq = Math.round(Math.sqrt((2*demanda*costo)/mantenimiento));
+        // let demanda_dia = demanda/365;
+        // let rop =  Math.round(demanda_dia * lead)
+        // let data = [eoq,0,eoq,0] 
+        let axis = [0,tiempoCiclo,(parseInt(tiempoCiclo)+1),tiempoCiclo*2]
+        this.chartOptions = {
+            xaxis: {
+              categories:axis
+            }
+        };
+        // this.series = [{
+        // data: data
+        // }]
+        // console.log(axis)
+        // console.log(data)
+      }
     }
   }
 </script>
