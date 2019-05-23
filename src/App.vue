@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import Form from './components/Form'
-import Table from './components/Form'
+// import Form from './components/Form'
+import Table from './components/Table'
 
 export default {
   name: 'App',
   components: {
-    Form
+    Table
   },
   data () {
     return {
