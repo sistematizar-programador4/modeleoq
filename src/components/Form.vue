@@ -1,44 +1,37 @@
 <template>
-  <v-form v-model="valid">  
+  <v-form>  
     <v-container>
-      <v-layout>
-        <v-flex xs12 md4 >
-          <v-text-field
-            v-model="R"
-            label="Demanda (Unidades por año)"
-            required
-          ></v-text-field>
-        </v-flex>
-
-        <v-flex xs12 md4>
-          <v-text-field
-            v-model="S"
-            label="Costo de emitir una orden"
-            required
-          ></v-text-field>
-        </v-flex>
-
-        <v-flex xs12 md4>
-          <v-text-field
-            v-model="C"
-            label="Costo de mantener en inventario"
-            required
-          ></v-text-field>
-        </v-flex>
-        <v-flex xs12 md4>
-          <v-text-field
-            v-model="L"
-            label="Lead Time"
-            required
-          ></v-text-field>
-        </v-flex>
-      </v-layout>
-    <v-flex xs12 md>
-        <v-btn color="warning" @click="modelEOQ()">Generar EOQ</v-btn>
-    </v-flex>
+        <v-data-table
+        :headers="headers"
+        :items="items"
+        class="elevation-1"
+        prev-icon="mdi-menu-left"
+        next-icon="mdi-menu-right"
+        sort-icon="mdi-menu-down"
+        >
+        <template v-slot:items="props">
+          <td class="text-xs-center">ITEM</td>
+          <td class="text-xs-center">{{ props.item.demanda }}</td>
+          <td class="text-xs-center">{{ props.item.costo }}</td>
+          <td class="text-xs-center">{{ props.item.mantenimiento }}</td>
+          <td class="text-xs-center">{{ props.item.lead }}</td>
+          <td class="text-xs-center">{{ props.item.eoq }}</td>
+          <td class="text-xs-center">{{ props.item.rop }}</td>
+        </template>
+      </v-data-table>
     </v-container>
     <v-container>
-        <apexchart width="550" type="line" :options="chartOptions" :series="series"></apexchart>
+      <v-layout wrap justify-space-between>
+        <v-flex xs12 md3>
+          <v-text-field
+            v-model="number"
+            label="N° ITEMS"
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs12 md9>
+          <v-btn @click="initTable()">Success</v-btn>
+        </v-flex>
+      </v-layout>
     </v-container>
   </v-form>
 </template>
@@ -46,47 +39,39 @@
 <script>
   export default {
     data: () => ({
-      valid: false,
-        R: '',
-        S: '',
-        C: '',
-        L: '',
-        chartOptions: {
-            chart: {
-                id: 'vuechart-example',
-            },
-            xaxis: {
-                categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
-            },
-        },
-        series: [{
-            name: 'series-1',
-            data: [30, 40, 45, 50, 49, 60, 70, 81]
-        }]
+      headers: [
+        {text: 'Item',align:'center',value: 'name'},
+        {text: 'Demanda',align:'center',value: 'demanda' },
+        {text: 'Costo',align:'center',value: 'costo' },
+        {text: 'Costo Mant.',align:'center',value: 'mantenimiento' },
+        {text: 'Lead Time',align:'center',value: 'lead' },
+        {text: 'EOQ',align:'center',value: 'eoq' },
+        {text: 'ROP',align:'center',value: 'rop' },
+      ],
+      items: [],
+      number:0
     }),
-
     methods: {
-        modelEOQ(){
-            var demanda = this.R;
-            var costo = this.S;
-            var mantenimiento = this.C;
-            var lead = this.L;
-            var eoq = Math.round(Math.sqrt((2*demanda*costo)/mantenimiento));
-            var demanda_dia = demanda/365;
-            var rop =  Math.round(demanda_dia * lead)
-            var data = [eoq,0,eoq,0] 
-            var axis = [0,lead,(parseInt(lead)+1),lead*2]
-            this.chartOptions = {
-                xaxis: {
-                    categories:axis
-                }
-            };
-            this.series = [{
-            data: data
-            }]
-            console.log(axis)
-            console.log(data)
+      initTable(){
+        console.log("hola");
+        for (let index = 0; index < this.number; index++){
+          var item = this.modelEOQ()
+          this.items.push(item);
+          console.log(item);
         }
+      },
+      modelEOQ(){
+        var demanda = Math.round(Math.random() * 1000);
+        var costo = Math.round(Math.random() * 100);
+        var mantenimiento = Math.round(Math.random() * 10);
+        var lead = Math.round(Math.random() * 10);
+        var eoq = Math.round(Math.sqrt((2*demanda*costo)/mantenimiento));
+        var demanda_dia = demanda/365;
+        var rop =  Math.round(demanda_dia * lead)
+        var array = {demanda:demanda,costo:costo,mantenimiento:mantenimiento,lead:lead,eoq:eoq,rop:rop}
+        console.log(array);
+        return array;
+      }
     }
   }
 </script>
