@@ -53,7 +53,6 @@
     }),
     methods: {
       initTable(){
-        console.log("hola");
         for (let index = 0; index < this.number; index++){
           var item = this.modelEOQ()
           this.items.push(item);
@@ -61,10 +60,10 @@
         }
       },
       modelEOQ(){
-        var demanda = Math.round(Math.random() * 1000);
-        var costo = Math.round(Math.random() * 100);
-        var mantenimiento = Math.round(Math.random() * 10);
-        var lead = Math.round(Math.random() * 10);
+        var demanda = Math.round((window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 1000);
+        var costo = Math.round((window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 100);
+        var mantenimiento = Math.round((window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 10);
+        var lead = Math.round((window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 10);
         var eoq = Math.round(Math.sqrt((2*demanda*costo)/mantenimiento));
         var demanda_dia = demanda/365;
         var rop =  Math.round(demanda_dia * lead)
