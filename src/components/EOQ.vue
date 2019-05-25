@@ -5,12 +5,14 @@
         :headers="headers"
         :items="items"
         class="elevation-1"
-        prev-icon="mdi-menu-left"
-        next-icon="mdi-menu-right"
-        sort-icon="mdi-menu-down"
+        hide-actions
       >
         <template v-slot:items="props">
-          <!-- <td class="text-xs-center">{{ props.item.rop }}</td> -->
+          <td style="width:118px !important;" class="text-xs-left">{{ props.item.mes }}</td>
+          <td style="width:118px !important;" class="text-xs-center">{{ props.item.demanda }}</td>
+          <td style="width:118px !important;" class="text-xs-right">{{ new Intl.NumberFormat("en-EN", {style: "currency", currency: "USD"}).format(props.item.orden) }}</td>
+          <td style="width:118px !important;" class="text-xs-right">{{ new Intl.NumberFormat("en-EN", {style: "currency", currency: "USD"}).format(props.item.mantener) }}</td>
+          <td style="width:118px !important;" class="text-xs-center">{{ props.item.lead }}</td>
         </template>
       </v-data-table>
     </v-container>
@@ -18,11 +20,29 @@
       <v-layout wrap justify-space-between>
         <v-flex xs12 md3>
           <v-text-field
-            v-model="number"
-            label="N° ITEMS"
+              v-model="demandapromedio"
+              label="Demanda Promedio"
           ></v-text-field>
         </v-flex>
-        <v-flex xs12 md9>
+        <v-flex xs12 md3>
+          <v-text-field 
+              v-model="ordenpromedio"
+              label="Costo Orden Promedio"
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs12 md3>
+          <v-text-field 
+              v-model="eoq"
+              label="EOQ"
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs12 md3>
+          <v-text-field 
+              v-model="rop"
+              label="ROP"
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs12 md12>
           <v-btn @click="initTable">Success</v-btn>
         </v-flex>
       </v-layout>
@@ -37,35 +57,50 @@ import {datos_temporada_valle,datos_temporada_alta} from '../constants/datos2'
   export default {
     data: () => ({
       headers: [
-        {text: 'Mes',align:'center',value: 'mes'},
-        {text: 'Harina',align:'center',value: 'tasaProduccion' },
-        {text: 'Costo Orden',align:'center',value: 'demanda' },
-        {text: 'Costo Mante.',align:'center',value: 'cantidadProduccion' },
+        {text: 'Mes',align:'center',value: 'mes',sortable:false},
+        {text: 'Harina (@)',align:'center',value: 'tasaProduccion' ,sortable:false},
+        {text: 'Costo Orden ($)',align:'center',value: 'demanda' ,sortable:false},
+        {text: 'Costo Mante.($)',align:'center',value: 'cantidadProduccion' ,sortable:false},
+        {text: 'Lead Time(Dias)',align:'center',value: 'cantidadProduccion' ,sortable:false},
       ],
       items: [],
+      mantener:250000,
+      lead:1,
+      rop:0,
+      eoq:0,
+      demandapromedio:0,
+      ordenpromedio:0,
       meses: ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],
+      mesesTemporadaAlta: ['enero','junio','julio','noviembre','diciembre'],
+      mesesTemporadaValle: ['febrero','marzo','abril','mayo','agosto','septiembre','octubre'],
       datosTemporadaValle: datos_temporada_valle,
       datosTemporadaAlta: datos_temporada_alta
     }),
     methods: {
       initTable(){
+        this.items = [];
         var meses = this.meses;
-        var datos = [];
         var valorArroba = 24500;
-        var tranporte = 5500;
+        var transporte = 5500;
+        var totaldemanda = 0;
+        var totalorden = 0;
         for (const key in meses) {
-        if(key == 0 || key == 5 || key == 6 || key == 10 || key == 11){
-          datos = this.datosTemporadaAlta
-        }else{
-          datos = this.datosTemporadaValle
+          var datos = this.getDataRandom();
+          let demanda = this.getDemanda(datos);
+          totaldemanda += demanda;
+          totalorden +=  Math.round(demanda * (valorArroba + transporte));
+          this.items.push({
+            mes:meses[key],
+            demanda: demanda,
+            orden:  Math.round(demanda * (valorArroba + transporte)),
+            mantener:250000,
+            lead:1
+          })
         }
-        if (meses.hasOwnProperty(key)) {
-          const  mes     = meses[key];
-          const  demanda = this.getDemanda(datos);
-          const  orden   = demanda * valorArroba * transporte;
-          const mantener = 250000;
-        }
-        }
+        this.demandapromedio = (totaldemanda / 12).toFixed(1);
+        this.ordenpromedio = new Intl.NumberFormat("en-EN", {style: "currency", currency: "USD"}).format(totalorden / 12);
+
+        
       },
       getSecondRandom(datos) {
         //doing a general getSecondRandom
@@ -138,6 +173,15 @@ import {datos_temporada_valle,datos_temporada_alta} from '../constants/datos2'
         }
         return position
       },
+      getDataRandom(){
+        let Random = Math.random()
+        console.log(Random);
+        if(Random <= (7/12)){
+          return this.datosTemporadaValle
+        }else{
+          return this.datosTemporadaAlta
+        }
+      },
       getDemanda(datos) {
         let positionOutside = this.getFirtsRandom(datos)
         let positionInside = this.getSecondRandom(datos)
@@ -153,8 +197,15 @@ import {datos_temporada_valle,datos_temporada_alta} from '../constants/datos2'
         }
         return valueToProduce      
       },
-      modelEOQ(){
-       
+      modelEOQ(demandapromedio,costopromedio){
+        var demanda = demandapromedio * 12
+        var demanda_dia = demanda/12;
+        var costo = costopromedio * 12
+        var mantenimiento = 250000
+        var lead = 1
+        this.eoq = Math.sqrt((2*demanda*costo)/mantenimiento);
+        this.rop =  demanda_dia*lead;
+
       }
     }
   }
