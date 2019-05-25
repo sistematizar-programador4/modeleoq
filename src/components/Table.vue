@@ -64,9 +64,9 @@ import datos from '../constants/datos'
         {text: 'Costo de organizacion Mensual',align:'center',value: 'costoOrganizacionMes' },
         {text: 'Costo de conservación Mensual',align:'center',value: 'costoConservacionMes' },
         {text: 'Costo Mensual Total',align:'center',value: 'costoMesTotal' }
-        // {text: 'Lead Time',align:'center',value: 'lead' },
-        // {text: 'EOQ',align:'center',value: 'eoq' },
-        // {text: 'ROP',align:'center',value: 'rop' },
+        // // {text: 'Lead Time',align:'center',value: 'lead' },
+        // // {text: 'EOQ',align:'center',value: 'eoq' },
+        // // {text: 'ROP',align:'center',value: 'rop' },
       ],
       items: [],
       number:0,
@@ -77,7 +77,7 @@ import datos from '../constants/datos'
         for (let index = 0; index < this.number; index++){
           var item = this.modelPOQ()
           this.items.push(item);
-          // console.log(item);
+          console.log(item);
         }
       },
       getSecondRandom() {
@@ -131,22 +131,70 @@ import datos from '../constants/datos'
         return position 
 
       },
-      getFirtsRandom() {        
-        let firstRandom = Math.random()
+      getFirtsRandom() {
+        //doing a general getFirtsRandom
         var position = 0
+        var array = this.arrayTasaProduccion
+        let globalSize = array.length
+        // let internalSize = array[0].length
+        let range = 1/globalSize                
+        let firstRandom = Math.random()
+        let initRange, finalRange, next        
+        for (var index in array) {
+          let key = parseInt(index)
+          // console.log(`key: ${key}`)
+          // console.log(`range ${key} : ${range}`)          
+          if (key == 0){
+            if (firstRandom >= key && firstRandom < range){          
+              position = key
+              console.log(`key 0 ->: ${key}`)
+              console.log(`initRange 0 inside: ${initRange}`)                  
+              console.log(`finalRange 0 inside: ${finalRange}`)                  
+              // console.log(`key 0: ${key}`)
+              // console.log(`range 0: ${range}`)              
+            }
+            // console.log(`range: ${range}`)
+          } else if (key > 0){          
+            if( key == 1 ){
+              initRange = range
+              next = key + 1
+              finalRange = initRange * next              
+            } else {               
+              initRange = finalRange
+              next = range * (key + 1)
+              finalRange = next
+            }
+            console.log(`initRangeOut: ${initRange}`)            
+            console.log(`next: ${next}`)
+            // finalRange = initRange * next
+            console.log(`finalRangeOut: ${finalRange}`)
+            if (firstRandom > initRange && firstRandom <= finalRange) {          
+              position = key
+              console.log(`key->: ${key}`)
+              console.log(`initRange inside: ${initRange}`)                  
+              console.log(`finalRange inside: ${finalRange}`)
+              break;             
+            }
+            // range = initRange
+          }                          
+        }
+        var position_prueba = 0
         if (firstRandom >= 0 && firstRandom < 0.25){          
-          position = 0                  
+          position_prueba = 0                  
         }
         if (firstRandom >= 0.25 && firstRandom < 0.5){          
-          position = 1          
+          position_prueba = 1          
         }
         if (firstRandom >= 0.5 && firstRandom < 0.75){          
-          position = 2          
+          position_prueba = 2          
         }
         if (firstRandom >= 0.75 && firstRandom <= 1){          
-          position = 3          
+          position_prueba = 3          
         }        
-        return position   
+        console.log(`position_prueba: ${position_prueba}`)  
+
+        return position        
+
       },
       getTasaProduccion() {
         let positionOutside = this.getFirtsRandom()
@@ -167,7 +215,7 @@ import datos from '../constants/datos'
         // this.arrayTasaProduccion[0].forEach(element => {
         //   console.log(JSON.stringify(element, null, 2));
         // });
-        // console.log(this.arrayTasaProduccion.length);
+        console.log(this.arrayTasaProduccion.length);
         let tasaProduccion = this.getTasaProduccion()
         console.log(`tasaProduccion: ${tasaProduccion}`)
         // let tasaProduccion = getTasaProduccion() ---this.P;
@@ -198,6 +246,7 @@ import datos from '../constants/datos'
         // var rop =  Math.round(demanda_dia * lead)
         // var array = {demanda:demanda,costo:costo,mantenimiento:mantenimiento,lead:lead,eoq:eoq,rop:rop}
         // console.log(array);
+        // var array = {tasaProduccion: tasaProduccion}
         // return array;
       }
     }
