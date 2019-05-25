@@ -31,13 +31,12 @@
     <v-container>
       <v-layout wrap justify-space-between>
         <v-flex xs12 md3>
-          <v-text-field
-            v-model="number"
+          <v-text-field            
             label="N° ITEMS"
           ></v-text-field>
         </v-flex>
         <v-flex xs12 md9>
-          <v-btn @click="initTable">Success</v-btn>
+          <v-btn @click="modelPOQ()">Success</v-btn>
         </v-flex>
       </v-layout>
     </v-container>
@@ -46,7 +45,7 @@
 
 <script>
 
-import {datos_temporada_valle,datos_temporada_alta} from '../constants/datos2'
+import {datos_temporada_valle, datos_temporada_alta} from '../constants/datos2'
 
   export default {
     data: () => ({
@@ -65,21 +64,21 @@ import {datos_temporada_valle,datos_temporada_alta} from '../constants/datos2'
         {text: 'Costo de conservación Mensual',align:'center',value: 'costoConservacionMes' },
         {text: 'Costo Mensual Total',align:'center',value: 'costoMesTotal' }
       ],
-      items: [],
-      number:0,
-      arrayTasaProduccion1: datos_temporada_valle,
-      arrayTasaProduccion2: datos_temporada_alta
+      items: [],      
+      arrayTasaProduccionValle: datos_temporada_valle,
+      arrayTasaProduccionAlta: datos_temporada_alta,
+      array: null
     }),
     methods: {
       initTable(){
-        console.log(this.arrayTasaProduccion1);
-        console.log(this.arrayTasaProduccion2);
+        console.log(this.arrayTasaProduccionValle);
+        console.log(this.arrayTasaProduccionAlta);
       },
       getSecondRandom() {
         //doing a general getSecondRandom
-        console.log(`firstRagetSecondRandomndom: ${this.arrayTasaProduccion[0].length}`);
+        console.log(`firstRagetSecondRandomndom: ${this.array[0].length}`);
         var position = 0
-        var array = this.arrayTasaProduccion[0]
+        var array = this.array[0]
         let globalSize = array.length        
         let range = 1/globalSize                
         let firstRandom = Math.random()
@@ -113,9 +112,9 @@ import {datos_temporada_valle,datos_temporada_alta} from '../constants/datos2'
       },
       getFirtsRandom() {
         //doing a general getFirtsRandom
-        console.log(`firstRandom: ${this.arrayTasaProduccion.length}`);
+        console.log(`firstRandom: ${this.array.length}`);
         var position = 0
-        var array = this.arrayTasaProduccion
+        var array = this.array
         let globalSize = array.length
         let range = 1/globalSize                
         let firstRandom = Math.random()
@@ -146,27 +145,55 @@ import {datos_temporada_valle,datos_temporada_alta} from '../constants/datos2'
         }
         return position
       },
-      getTasaProduccion() {
+      getdataArray() {
+        // get array of data valle(7/12) or alta(5/12) 
+        let dataRandom = Math.random()
+        if (dataRandom >= (7/12)) {
+          this.array = this.arrayTasaProduccionValle
+        } else {
+          this.array = this.arrayTasaProduccionAlta
+        }
+      },
+      getDataRandom() {
+        this.getdataArray()
         let positionOutside = this.getFirtsRandom()
         let positionInside = this.getSecondRandom()
-        var valueToProduce = 0;
-        var target = this.arrayTasaProduccion[positionOutside]
+        var value = 0;
+        var target = this.array[positionOutside]
         for (var key in target) {
           if(positionInside == key){
             if(target.hasOwnProperty(key)){            
-              valueToProduce = target[key];
+              value = target[key];
               break;
             }
           }
         }        
-        return valueToProduce      
+        return value      
+      },
+      getDemanda (tasaProduccion) {
+        let value = 0        
+        let demanda = this.getDataRandom()
+        console.log(`demanda getDemanda: ${demanda}`)
+        for (var key in this.array) {
+          if ( demanda <= tasaProduccion  ) {
+            value = demanda
+            break;
+          } else {
+            let demanda = this.getDataRandom()
+            value = demanda
+          }                         
+        };
+        return value
+        
       },
       modelPOQ(){
-                // this.arrayTasaProduccion[0].forEach(element => {
+        // this.arrayTasaProduccion[0].forEach(element => {
         //   console.log(JSON.stringify(element, null, 2));
         // });        
-        let tasaProduccion = this.getTasaProduccion()
+        let tasaProduccion = this.getDataRandom()
         console.log(`tasaProduccion: ${tasaProduccion}`)
+        let demanda = this.getDemanda(tasaProduccion)   
+        console.log(`demanda: ${demanda}`)     
         // let tasaProduccion = getTasaProduccion() ---this.P;
         // let demanda = this.D;
         // let cantidadProduccion = this.Q;
