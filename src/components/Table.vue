@@ -81,79 +81,21 @@ import datos from '../constants/datos'
         }
       },
       getSecondRandom() {
-        let firstRandom = Math.random()
+        //doing a general getSecondRandom
+        console.log(`firstRagetSecondRandomndom: ${this.arrayTasaProduccion[0].length}`);
         var position = 0
-        if (firstRandom >= 0 && firstRandom < 0.0666){          
-          position = 0                  
-        }
-        if (firstRandom >= 0.0666 && firstRandom < 0.1332 ){          
-          position = 1          
-        }
-        if (firstRandom >= 0.1332 && firstRandom < 0.1998){          
-          position = 2          
-        }
-        if (firstRandom >= 0.1998 && firstRandom < 0.2664){          
-          position = 3          
-        }
-        if (firstRandom >= 0.2664 && firstRandom < 0.333){          
-          position = 4          
-        }
-        if (firstRandom >= 0.333 && firstRandom < 0.3996){          
-          position = 5         
-        }
-        if (firstRandom >= 0.3996 && firstRandom < 0.4662){          
-          position = 6          
-        }
-        if (firstRandom >= 0.4662 && firstRandom < 0.5328){          
-          position = 7          
-        }
-        if (firstRandom >= 0.5328 && firstRandom < 0.5994){          
-          position = 8          
-        }
-        if (firstRandom >= 0.5994 && firstRandom < 0.666){          
-          position = 9          
-        }
-        if (firstRandom >= 0.666 && firstRandom < 0.7326){          
-          position = 10          
-        }   
-        if (firstRandom >= 0.7326 && firstRandom < 0.7992){          
-          position = 11          
-        }    
-        if (firstRandom >= 0.7992 && firstRandom < 0.8658){          
-          position = 12          
-        }
-        if (firstRandom >= 0.8658 && firstRandom < 0.9324){          
-          position = 13          
-        }    
-        if (firstRandom >= 0.9324 && firstRandom <=  1){          
-          position = 14          
-        }     
-        return position 
-
-      },
-      getFirtsRandom() {
-        //doing a general getFirtsRandom
-        var position = 0
-        var array = this.arrayTasaProduccion
-        let globalSize = array.length
-        // let internalSize = array[0].length
+        var array = this.arrayTasaProduccion[0]
+        let globalSize = array.length        
         let range = 1/globalSize                
         let firstRandom = Math.random()
         let initRange, finalRange, next        
         for (var index in array) {
-          let key = parseInt(index)
-          // console.log(`key: ${key}`)
-          // console.log(`range ${key} : ${range}`)          
+          let key = parseInt(index)         
           if (key == 0){
             if (firstRandom >= key && firstRandom < range){          
               position = key
-              console.log(`key 0 ->: ${key}`)
-              console.log(`initRange 0 inside: ${initRange}`)                  
-              console.log(`finalRange 0 inside: ${finalRange}`)                  
-              // console.log(`key 0: ${key}`)
-              // console.log(`range 0: ${range}`)              
+              console.log(`key inside 0 ->: ${key}`)            
             }
-            // console.log(`range: ${range}`)
           } else if (key > 0){          
             if( key == 1 ){
               initRange = range
@@ -164,35 +106,110 @@ import datos from '../constants/datos'
               next = range * (key + 1)
               finalRange = next
             }
-            console.log(`initRangeOut: ${initRange}`)            
-            console.log(`next: ${next}`)
-            // finalRange = initRange * next
-            console.log(`finalRangeOut: ${finalRange}`)
-            if (firstRandom > initRange && firstRandom <= finalRange) {          
+            if (firstRandom >= initRange && firstRandom <= finalRange) {          
               position = key
-              console.log(`key->: ${key}`)
-              console.log(`initRange inside: ${initRange}`)                  
-              console.log(`finalRange inside: ${finalRange}`)
+              console.log(`key inside->: ${key}`)
               break;             
-            }
-            // range = initRange
+            }            
           }                          
         }
-        var position_prueba = 0
-        if (firstRandom >= 0 && firstRandom < 0.25){          
-          position_prueba = 0                  
-        }
-        if (firstRandom >= 0.25 && firstRandom < 0.5){          
-          position_prueba = 1          
-        }
-        if (firstRandom >= 0.5 && firstRandom < 0.75){          
-          position_prueba = 2          
-        }
-        if (firstRandom >= 0.75 && firstRandom <= 1){          
-          position_prueba = 3          
-        }        
-        console.log(`position_prueba: ${position_prueba}`)  
+        // var position_prueba = 0
+        // if (firstRandom >= 0 && firstRandom < 0.0666){          
+        //   position_prueba = 0                  
+        // }
+        // if (firstRandom >= 0.0666 && firstRandom < 0.1332 ){          
+        //   position_prueba = 1          
+        // }
+        // if (firstRandom >= 0.1332 && firstRandom < 0.1998){          
+        //   position_prueba = 2          
+        // }
+        // if (firstRandom >= 0.1998 && firstRandom < 0.2664){          
+        //   position_prueba = 3          
+        // }
+        // if (firstRandom >= 0.2664 && firstRandom < 0.333){          
+        //   position_prueba = 4          
+        // }
+        // if (firstRandom >= 0.333 && firstRandom < 0.3996){          
+        //   position_prueba = 5         
+        // }
+        // if (firstRandom >= 0.3996 && firstRandom < 0.4662){          
+        //   position_prueba = 6          
+        // }
+        // if (firstRandom >= 0.4662 && firstRandom < 0.5328){          
+        //   position_prueba = 7          
+        // }
+        // if (firstRandom >= 0.5328 && firstRandom < 0.5994){          
+        //   position_prueba = 8          
+        // }
+        // if (firstRandom >= 0.5994 && firstRandom < 0.666){          
+        //   position_prueba = 9          
+        // }
+        // if (firstRandom >= 0.666 && firstRandom < 0.7326){          
+        //   position_prueba = 10          
+        // }   
+        // if (firstRandom >= 0.7326 && firstRandom < 0.7992){          
+        //   position_prueba = 11          
+        // }    
+        // if (firstRandom >= 0.7992 && firstRandom < 0.8658){          
+        //   position_prueba = 12          
+        // }
+        // if (firstRandom >= 0.8658 && firstRandom < 0.9324){          
+        //   position_prueba = 13          
+        // }    
+        // if (firstRandom >= 0.9324 && firstRandom <=  1){          
+        //   position_prueba = 14          
+        // } 
+        // console.log(`position_prueba: ${position_prueba}`)    
+        return position 
 
+      },
+      getFirtsRandom() {
+        //doing a general getFirtsRandom
+        console.log(`firstRandom: ${this.arrayTasaProduccion.length}`);
+        var position = 0
+        var array = this.arrayTasaProduccion
+        let globalSize = array.length
+        let range = 1/globalSize                
+        let firstRandom = Math.random()
+        let initRange, finalRange, next        
+        for (var index in array) {
+          let key = parseInt(index)       
+          if (key == 0){
+            if (firstRandom >= key && firstRandom < range){          
+              position = key
+              console.log(`key 0 ->: ${key}`)          
+            }
+          } else if (key > 0){          
+            if( key == 1 ){
+              initRange = range
+              next = key + 1
+              finalRange = initRange * next              
+            } else {               
+              initRange = finalRange
+              next = range * (key + 1)
+              finalRange = next
+            }
+            if (firstRandom >= initRange && firstRandom <= finalRange) {          
+              position = key
+              console.log(`key->: ${key}`)             
+              break;             
+            }
+          }                          
+        }
+        // var position_prueba = 0
+        // if (firstRandom >= 0 && firstRandom < 0.25){          
+        //   position_prueba = 0                  
+        // }
+        // if (firstRandom >= 0.25 && firstRandom < 0.5){          
+        //   position_prueba = 1          
+        // }
+        // if (firstRandom >= 0.5 && firstRandom < 0.75){          
+        //   position_prueba = 2          
+        // }
+        // if (firstRandom >= 0.75 && firstRandom <= 1){          
+        //   position_prueba = 3          
+        // }        
+        // console.log(`position_prueba: ${position_prueba}`) 
         return position        
 
       },
@@ -214,8 +231,7 @@ import datos from '../constants/datos'
       modelPOQ(){
         // this.arrayTasaProduccion[0].forEach(element => {
         //   console.log(JSON.stringify(element, null, 2));
-        // });
-        console.log(this.arrayTasaProduccion.length);
+        // });        
         let tasaProduccion = this.getTasaProduccion()
         console.log(`tasaProduccion: ${tasaProduccion}`)
         // let tasaProduccion = getTasaProduccion() ---this.P;
