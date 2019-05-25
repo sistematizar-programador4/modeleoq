@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Form/>
+    <Table/>
   </v-app>
 </template>
 
@@ -10,7 +10,7 @@ import Table from './components/Table'
 
 export default {
   name: 'App',
-  components: {
+  components: {    
     Table
   },
   data () {

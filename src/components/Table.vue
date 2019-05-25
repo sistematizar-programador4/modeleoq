@@ -1,13 +1,14 @@
 <template>
   <v-form>  
-    <v-container>
-      <v-data-table
-      :headers="headers"
-      :items="items"
-      class="elevation-1"
-      prev-icon="mdi-menu-left"
-      next-icon="mdi-menu-right"
-      sort-icon="mdi-menu-down"
+    <v-container fluid>
+      <v-data-table 
+        dark      
+        :headers="headers"
+        :items="items"
+        class="elevation-1"
+        prev-icon="mdi-menu-left"
+        next-icon="mdi-menu-right"
+        sort-icon="mdi-menu-down"
       >
         <template v-slot:items="props">
           <td class="text-xs-center">ITEM</td>
@@ -36,7 +37,7 @@
           ></v-text-field>
         </v-flex>
         <v-flex xs12 md9>
-          <v-btn @click="initTable()">Success</v-btn>
+          <v-btn @click="modelPOQ()">Success</v-btn>
         </v-flex>
       </v-layout>
     </v-container>
@@ -44,6 +45,9 @@
 </template>
 
 <script>
+
+import datos from '../constants/datos'
+
   export default {
     data: () => ({
       headers: [
@@ -65,17 +69,126 @@
         // {text: 'ROP',align:'center',value: 'rop' },
       ],
       items: [],
-      number:0
+      number:0,
+      arrayTasaProduccion: datos
     }),
     methods: {
       initTable(){
         for (let index = 0; index < this.number; index++){
-          var item = this.modelEOQ()
+          var item = this.modelPOQ()
           this.items.push(item);
           // console.log(item);
         }
       },
-      modelEOQ(){
+      getSecondRandom() {
+        let firstRandom = Math.random()
+        var position = 0
+        if (firstRandom >= 0 && firstRandom < 0.0666){          
+          position = 0                  
+        }
+        if (firstRandom >= 0.0666 && firstRandom < 0.1332 ){          
+          position = 1          
+        }
+        if (firstRandom >= 0.1332 && firstRandom < 0.1998){          
+          position = 2          
+        }
+        if (firstRandom >= 0.1998 && firstRandom < 0.2664){          
+          position = 3          
+        }
+        if (firstRandom >= 0.2664 && firstRandom < 0.333){          
+          position = 4          
+        }
+        if (firstRandom >= 0.333 && firstRandom < 0.3996){          
+          position = 5         
+        }
+        if (firstRandom >= 0.3996 && firstRandom < 0.4662){          
+          position = 6          
+        }
+        if (firstRandom >= 0.4662 && firstRandom < 0.5328){          
+          position = 7          
+        }
+        if (firstRandom >= 0.5328 && firstRandom < 0.5994){          
+          position = 8          
+        }
+        if (firstRandom >= 0.5994 && firstRandom < 0.666){          
+          position = 9          
+        }
+        if (firstRandom >= 0.666 && firstRandom < 0.7326){          
+          position = 10          
+        }   
+        if (firstRandom >= 0.7326 && firstRandom < 0.7992){          
+          position = 11          
+        }    
+        if (firstRandom >= 0.7992 && firstRandom < 0.8658){          
+          position = 12          
+        }
+        if (firstRandom >= 0.8658 && firstRandom < 0.9324){          
+          position = 13          
+        }    
+        if (firstRandom >= 0.9324 && firstRandom <=  1){          
+          position = 14          
+        }     
+        return position 
+
+      },
+      getFirtsRandom() {        
+        let firstRandom = Math.random()
+        var position = 0
+        if (firstRandom >= 0 && firstRandom < 0.25){          
+          position = 0                  
+        }
+        if (firstRandom >= 0.25 && firstRandom < 0.5){          
+          position = 1          
+        }
+        if (firstRandom >= 0.5 && firstRandom < 0.75){          
+          position = 2          
+        }
+        if (firstRandom >= 0.75 && firstRandom <= 1){          
+          position = 3          
+        }        
+        return position   
+      },
+      getTasaProduccion() {
+        let positionOutside = this.getFirtsRandom()
+        let positionInside = this.getSecondRandom()
+        var valueToProduce = 0;
+        var target = this.arrayTasaProduccion[positionOutside]
+        for (var key in target) {
+          if(positionInside == key){
+            if(target.hasOwnProperty(key)){            
+              valueToProduce = target[key];
+              break;
+            }
+          }
+        }        
+        return valueToProduce      
+      },
+      modelPOQ(){
+        // this.arrayTasaProduccion[0].forEach(element => {
+        //   console.log(JSON.stringify(element, null, 2));
+        // });
+        // console.log(this.arrayTasaProduccion.length);
+        let tasaProduccion = this.getTasaProduccion()
+        console.log(`tasaProduccion: ${tasaProduccion}`)
+        // let tasaProduccion = getTasaProduccion() ---this.P;
+        // let demanda = this.D;
+        // let cantidadProduccion = this.Q;
+        // let tiempoGuia = this.L;
+        // let costoOrganizacion = this.K;
+        // let valorProducto = this.C; // costoConservacionMensual
+        // let tasaTransferencia = this.i;
+
+        // let costoConservacion = tasaTransferencia * valorProducto;
+        // this.H = costoConservacion;
+        // let tiempoCiclo = cantidadProduccion/tasaProduccion; // T = Q/D
+        // let valMaxInventario = (tasaProduccion - demanda) * tiempoCiclo; // 2. (P-D)*Q/P
+
+        // let costoOrganizacionMensual = costoOrganizacion * (demanda/cantidadProduccion); // costo de organizacion mensual = (K * D/Q)
+        // let costoConservacionMensual =  (valMaxInventario/2) * costoConservacion; // costo de conservacion mensual = (inventario promedio * costoConservacion)
+        // let constoMensualTotal = costoOrganizacionMensual * costoConservacionMensual;
+
+        // let Qobtima = Math.sqrt( (2*demanda*costoOrganizacion)/(costoConservacion* ((tasaProduccion-demanda)/tasaProduccion) ) );
+
         // var demanda = Math.round((window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 1000);
         // var costo = Math.round((window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 100);
         // var mantenimiento = Math.round((window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 10);
@@ -94,4 +207,3 @@
 <style>
 
 </style>
-
