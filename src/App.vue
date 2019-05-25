@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <EOQ/>
+    <Table/>
   </v-app>
 </template>
 
