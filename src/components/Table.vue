@@ -37,7 +37,7 @@
           ></v-text-field>
         </v-flex>
         <v-flex xs12 md9>
-          <v-btn @click="modelPOQ()">Success</v-btn>
+          <v-btn @click="initTable">Success</v-btn>
         </v-flex>
       </v-layout>
     </v-container>
@@ -46,7 +46,7 @@
 
 <script>
 
-import datos from '../constants/datos'
+import {datos_temporada_valle,datos_temporada_alta} from '../constants/datos2'
 
   export default {
     data: () => ({
@@ -64,21 +64,16 @@ import datos from '../constants/datos'
         {text: 'Costo de organizacion Mensual',align:'center',value: 'costoOrganizacionMes' },
         {text: 'Costo de conservación Mensual',align:'center',value: 'costoConservacionMes' },
         {text: 'Costo Mensual Total',align:'center',value: 'costoMesTotal' }
-        // // {text: 'Lead Time',align:'center',value: 'lead' },
-        // // {text: 'EOQ',align:'center',value: 'eoq' },
-        // // {text: 'ROP',align:'center',value: 'rop' },
       ],
       items: [],
       number:0,
-      arrayTasaProduccion: datos
+      arrayTasaProduccion1: datos_temporada_valle,
+      arrayTasaProduccion2: datos_temporada_alta
     }),
     methods: {
       initTable(){
-        for (let index = 0; index < this.number; index++){
-          var item = this.modelPOQ()
-          this.items.push(item);
-          console.log(item);
-        }
+        console.log(this.arrayTasaProduccion1);
+        console.log(this.arrayTasaProduccion2);
       },
       getSecondRandom() {
         //doing a general getSecondRandom
@@ -94,7 +89,7 @@ import datos from '../constants/datos'
           if (key == 0){
             if (firstRandom >= key && firstRandom < range){          
               position = key
-              console.log(`key inside 0 ->: ${key}`)            
+              console.log(`key inside 0 ->: ${key}`);     
             }
           } else if (key > 0){          
             if( key == 1 ){
@@ -108,58 +103,11 @@ import datos from '../constants/datos'
             }
             if (firstRandom >= initRange && firstRandom <= finalRange) {          
               position = key
-              console.log(`key inside->: ${key}`)
+              console.log(`key inside->: ${key}`);
               break;             
             }            
           }                          
-        }
-        // var position_prueba = 0
-        // if (firstRandom >= 0 && firstRandom < 0.0666){          
-        //   position_prueba = 0                  
-        // }
-        // if (firstRandom >= 0.0666 && firstRandom < 0.1332 ){          
-        //   position_prueba = 1          
-        // }
-        // if (firstRandom >= 0.1332 && firstRandom < 0.1998){          
-        //   position_prueba = 2          
-        // }
-        // if (firstRandom >= 0.1998 && firstRandom < 0.2664){          
-        //   position_prueba = 3          
-        // }
-        // if (firstRandom >= 0.2664 && firstRandom < 0.333){          
-        //   position_prueba = 4          
-        // }
-        // if (firstRandom >= 0.333 && firstRandom < 0.3996){          
-        //   position_prueba = 5         
-        // }
-        // if (firstRandom >= 0.3996 && firstRandom < 0.4662){          
-        //   position_prueba = 6          
-        // }
-        // if (firstRandom >= 0.4662 && firstRandom < 0.5328){          
-        //   position_prueba = 7          
-        // }
-        // if (firstRandom >= 0.5328 && firstRandom < 0.5994){          
-        //   position_prueba = 8          
-        // }
-        // if (firstRandom >= 0.5994 && firstRandom < 0.666){          
-        //   position_prueba = 9          
-        // }
-        // if (firstRandom >= 0.666 && firstRandom < 0.7326){          
-        //   position_prueba = 10          
-        // }   
-        // if (firstRandom >= 0.7326 && firstRandom < 0.7992){          
-        //   position_prueba = 11          
-        // }    
-        // if (firstRandom >= 0.7992 && firstRandom < 0.8658){          
-        //   position_prueba = 12          
-        // }
-        // if (firstRandom >= 0.8658 && firstRandom < 0.9324){          
-        //   position_prueba = 13          
-        // }    
-        // if (firstRandom >= 0.9324 && firstRandom <=  1){          
-        //   position_prueba = 14          
-        // } 
-        // console.log(`position_prueba: ${position_prueba}`)    
+        } 
         return position 
 
       },
@@ -177,7 +125,7 @@ import datos from '../constants/datos'
           if (key == 0){
             if (firstRandom >= key && firstRandom < range){          
               position = key
-              console.log(`key 0 ->: ${key}`)          
+              console.log(`key 0 ->: ${key}`);   
             }
           } else if (key > 0){          
             if( key == 1 ){
@@ -191,27 +139,12 @@ import datos from '../constants/datos'
             }
             if (firstRandom >= initRange && firstRandom <= finalRange) {          
               position = key
-              console.log(`key->: ${key}`)             
+              console.log(`key->: ${key}`);         
               break;             
             }
           }                          
         }
-        // var position_prueba = 0
-        // if (firstRandom >= 0 && firstRandom < 0.25){          
-        //   position_prueba = 0                  
-        // }
-        // if (firstRandom >= 0.25 && firstRandom < 0.5){          
-        //   position_prueba = 1          
-        // }
-        // if (firstRandom >= 0.5 && firstRandom < 0.75){          
-        //   position_prueba = 2          
-        // }
-        // if (firstRandom >= 0.75 && firstRandom <= 1){          
-        //   position_prueba = 3          
-        // }        
-        // console.log(`position_prueba: ${position_prueba}`) 
-        return position        
-
+        return position
       },
       getTasaProduccion() {
         let positionOutside = this.getFirtsRandom()
@@ -229,7 +162,7 @@ import datos from '../constants/datos'
         return valueToProduce      
       },
       modelPOQ(){
-        // this.arrayTasaProduccion[0].forEach(element => {
+                // this.arrayTasaProduccion[0].forEach(element => {
         //   console.log(JSON.stringify(element, null, 2));
         // });        
         let tasaProduccion = this.getTasaProduccion()
@@ -241,18 +174,14 @@ import datos from '../constants/datos'
         // let costoOrganizacion = this.K;
         // let valorProducto = this.C; // costoConservacionMensual
         // let tasaTransferencia = this.i;
-
         // let costoConservacion = tasaTransferencia * valorProducto;
         // this.H = costoConservacion;
         // let tiempoCiclo = cantidadProduccion/tasaProduccion; // T = Q/D
         // let valMaxInventario = (tasaProduccion - demanda) * tiempoCiclo; // 2. (P-D)*Q/P
-
         // let costoOrganizacionMensual = costoOrganizacion * (demanda/cantidadProduccion); // costo de organizacion mensual = (K * D/Q)
         // let costoConservacionMensual =  (valMaxInventario/2) * costoConservacion; // costo de conservacion mensual = (inventario promedio * costoConservacion)
         // let constoMensualTotal = costoOrganizacionMensual * costoConservacionMensual;
-
         // let Qobtima = Math.sqrt( (2*demanda*costoOrganizacion)/(costoConservacion* ((tasaProduccion-demanda)/tasaProduccion) ) );
-
         // var demanda = Math.round((window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 1000);
         // var costo = Math.round((window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 100);
         // var mantenimiento = Math.round((window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 10);
