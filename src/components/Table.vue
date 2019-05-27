@@ -23,8 +23,13 @@
           <td class="text-xs-center">{{ props.item.tiempoCiclo }}</td>
           <td class="text-xs-center">{{ props.item.costoOrganizacionMes }}</td>
           <td class="text-xs-center">{{ props.item.costoConservacionMes }}</td>
-          <td class="text-xs-center">{{ props.item.costoMesTotal }}</td>
-          <!-- <td class="text-xs-center">{{ props.item.rop }}</td> -->
+          <td class="text-xs-center">{{ props.item.constoMensualTotal }}</td>
+          <td class="text-xs-center">{{ props.item.valMaxInventario }}</td>
+          <td class="text-xs-center">{{ props.item.qOptima }}</td>
+          <td class="text-xs-center">{{ props.item.prompedidosxPeriodo }}</td>
+          <td class="text-xs-center">{{ props.item.tiempoCicloOptimo }}</td>
+          <td class="text-xs-center">{{ props.item.tiempoProduccionPrevia }}</td>
+          <td class="text-xs-center">{{ props.item.puntoNuevoPedido }}</td>           
         </template>
       </v-data-table>
     </v-container>
@@ -63,27 +68,33 @@ import {datos_temporada_valle, datos_temporada_alta} from '../constants/datos2'
         {text: 'Tiempo de ciclo (T)',align:'center',value: 'tiempoCiclo' },
         {text: 'Costo de organizacion Mensual',align:'center',value: 'costoOrganizacionMes' },
         {text: 'Costo de conservación Mensual',align:'center',value: 'costoConservacionMes' },
-        {text: 'Costo Mensual Total',align:'center',value: 'costoMesTotal' }
+        {text: 'Costo Mensual Total',align:'center',value: 'constoMensualTotal' },
+        {text: 'Valor maximo Inventario',align:'center',value: 'valMaxInventario' },
+        {text: 'Cantidad Produccion Optima (Q*)',align:'center',value: 'qOptima' },
+        {text: 'N° Promedio pedidios x periodo',align:'center',value: 'prompedidosxPeriodo' },
+        {text: 'Tiempo de ciclo Optimo',align:'center',value: 'tiempoCicloOptimo' } ,       
+        {text: 'Tiempo finalizacion produccion previa',align:'center',value: 'tiempoProduccionPrevia' },
+        {text: 'Punto de nuevo pedido (R)',align:'center',value: 'puntoNuevoPedido' }
       ],
+      number: 0,
       items: [],      
       arrayTasaProduccionValle: datos_temporada_valle,
       arrayTasaProduccionAlta: datos_temporada_alta,
       array: null,
-      number: 0
+      tasaTranferencia_i: null,
+      costoOrganizacion_k: null,
+      positionOutside: null,
+      positionInside: null
     }),
     methods: {
       initTable(){
         for (let index = 0; index < this.number; index++){
           var item = this.modelPOQ()
-          this.items.push(item);
-          console.log(`item: ${item}`);
+          this.items.push(item)          
         }
-        console.log(this.arrayTasaProduccionValle);
-        console.log(this.arrayTasaProduccionAlta);
       },
       getSecondRandom() {
-        //doing a general getSecondRandom
-        // console.log(`firstRagetSecondRandomndom: ${this.array[0].length}`);
+        //doing a general getSecondRandom        
         var position = 0
         var array = this.array[0]
         let globalSize = array.length        
@@ -94,8 +105,7 @@ import {datos_temporada_valle, datos_temporada_alta} from '../constants/datos2'
           let key = parseInt(index)         
           if (key == 0){
             if (firstRandom >= key && firstRandom < range){          
-              position = key
-              // console.log(`key inside 0 ->: ${key}`);     
+              position = key              
             }
           } else if (key > 0){          
             if( key == 1 ){
@@ -108,8 +118,7 @@ import {datos_temporada_valle, datos_temporada_alta} from '../constants/datos2'
               finalRange = next
             }
             if (firstRandom >= initRange && firstRandom <= finalRange) {          
-              position = key
-              // console.log(`key inside->: ${key}`);
+              position = key              
               break;             
             }            
           }                          
@@ -118,8 +127,7 @@ import {datos_temporada_valle, datos_temporada_alta} from '../constants/datos2'
 
       },
       getFirtsRandom() {
-        //doing a general getFirtsRandom
-        // console.log(`firstRandom: ${this.array.length}`);
+        //doing a general getFirtsRandom        
         var position = 0
         var array = this.array
         let globalSize = array.length
@@ -130,8 +138,7 @@ import {datos_temporada_valle, datos_temporada_alta} from '../constants/datos2'
           let key = parseInt(index)       
           if (key == 0){
             if (firstRandom >= key && firstRandom < range){          
-              position = key
-              // console.log(`key 0 ->: ${key}`);   
+              position = key              
             }
           } else if (key > 0){          
             if( key == 1 ){
@@ -144,8 +151,7 @@ import {datos_temporada_valle, datos_temporada_alta} from '../constants/datos2'
               finalRange = next
             }
             if (firstRandom >= initRange && firstRandom <= finalRange) {          
-              position = key
-              // console.log(`key->: ${key}`);         
+              position = key              
               break;             
             }
           }                          
@@ -157,14 +163,20 @@ import {datos_temporada_valle, datos_temporada_alta} from '../constants/datos2'
         let dataRandom = Math.random()
         if (dataRandom >= (7/12)) {
           this.array = this.arrayTasaProduccionValle
+          this.tasaTranferencia_i = 1.01
+          this.costoOrganizacion_k = 11200000
         } else {
           this.array = this.arrayTasaProduccionAlta
+          this.tasaTranferencia_i = 1.02
+          this.costoOrganizacion_k = 12600000
         }
       },
       getDataRandom() {
         this.getdataArray()
-        let positionOutside = this.getFirtsRandom()
-        let positionInside = this.getSecondRandom()
+        this.positionOutside = this.getFirtsRandom()
+        this.positionInside = this.getSecondRandom()
+        let positionOutside = this.positionOutside
+        let positionInside = this.positionInside
         var value = 0;
         var target = this.array[positionOutside]
         for (var key in target) {
@@ -179,9 +191,9 @@ import {datos_temporada_valle, datos_temporada_alta} from '../constants/datos2'
       },
       getDemanda (tasaProduccion) {
         let value = 0        
-        let demanda = this.getDataRandom()        
         for (var key in this.array[0]) {
-          if ( tasaProduccion  >= demanda) {
+          let demanda = this.getDataRandom()        
+          if ( tasaProduccion  > demanda) {
             value = demanda
             break;
           } else {
@@ -192,57 +204,72 @@ import {datos_temporada_valle, datos_temporada_alta} from '../constants/datos2'
         return value
         
       },
-      getCantidadProduccion (tasaProduccion, demanda) {
+      getCantidadProduccion (tasaProduccion, demanda) { 
         let value = 0        
-        let Q = this.getDataRandom()        
-        for (var key in this.array[0]) {
-          if ( Q  > demanda && Q  < tasaProduccion) {
-            value = Q
+        for (var x=0; x<=10000; x++) {
+          let Q = this.getDataRandom()        
+          if ( Q  >= demanda && Q  <= tasaProduccion) {
+            value = Q            
             break;
-          } else {
-            Q = this.getDataRandom()
-            value = Q
-          }                         
+          }                     
         };
-        return value
+        return value        
         
       },
       modelPOQ(){     
-        let tasaProduccion = this.getDataRandom()
-        let demanda = this.getDemanda(tasaProduccion)   
-        let cantidadProduccion = this.getCantidadProduccion(tasaProduccion, demanda)
-        // let tiempoGuia =   // PREGUNTAR 
-        // let costoOrganizacionK =   // PREGUNTAR 
+        let tasaProduccion_ = (this.getDataRandom())
+        let demanda_ = (this.getDemanda(tasaProduccion_))
+        let cantidadProduccion_ = (this.getCantidadProduccion(tasaProduccion_, demanda_))
+
+        let tasaProduccion = (tasaProduccion_ * 24).toFixed(4)
+        let demanda = (demanda_ * 24).toFixed(4)
+        let cantidadProduccion = (cantidadProduccion_ * 24).toFixed(4)
+
+
+        let tiempoGuia = 0.87  // PREGUNTAR --------------->>>
+        let costoOrganizacionK = this.costoOrganizacion_k// PREGUNTAR         
         let valorProducto = 200 
-        let tasaTransferencia = 100 // SEGURO?
-        let costoConservacionH = tasaTransferencia * valorProducto // POR ITEM AL MES
-        let tiempoCiclo = cantidadProduccion/tasaProduccion; // T = Q/D
-        let valMaxInventario = (tasaProduccion - demanda) * tiempoCiclo; // 2. (P-D)*Q/P // no se muestra en la tabla
-        // let costoOrganizacionMes = costoOrganizacionK * (demanda/cantidadProduccion); // costo de organizacion mensual = (K * D/Q)
-        let costoConservacionMes =  (valMaxInventario/2) * costoConservacionH; // costo de conservacion mensual = (inventario promedio * costoConservacionH)
-        // let constoMensualTotal = costoOrganizacionMes * costoConservacionMes;
-        console.log(`tasaProduccion: ${tasaProduccion}`)
-        console.log(`demanda: ${demanda}`)
-        console.log(`cantidadProduccion: ${cantidadProduccion}`)    
-        // let tiempoGuia = this.L;                                     TO DO
-        // let costoOrganizacion = this.K;                              TO DO
-        // let valorProducto = this.C; // costoConservacionMensual      DONE
-        // let tasaTransferencia = this.i;                              TO DO
-        // let costoConservacion = tasaTransferencia * valorProducto;   TO DO        
-        // let tiempoCiclo = cantidadProduccion/tasaProduccion; // T = Q/D    DONE
+        let tasaTransferencia = this.tasaTranferencia_i // SEGURO?
+        let costoConservacionH = tasaTransferencia * valorProducto // POR ITEM AL MES        
+        let tiempoCiclo = (cantidadProduccion/tasaProduccion).toFixed(4) // T = Q/D        
+        let valMaxInventario = (tasaProduccion - demanda) * tiempoCiclo // 2. (P-D)*Q/P // no se muestra en la tabla        
+
+        let costoOrganizacionMes = Math.round( costoOrganizacionK * (demanda/cantidadProduccion) )  // costo de organizacion mensual = (K * D/Q)        
+        let costoConservacionMes =  ( (valMaxInventario/2) * costoConservacionH ).toFixed(4) // costo de conservacion mensual = (inventario promedio * costoConservacionH)
+        let constoMensualTotal = Math.round( costoOrganizacionMes * costoConservacionMes )
+
+
+
+        let Optima = ((2 * demanda * costoOrganizacionK) / (costoConservacionH * ( (tasaProduccion-demanda)/tasaProduccion) ))
+        let qOptima = Math.round( Math.sqrt(Optima) ) 
+        // AL SER TAN CARO EL COSTO DE ORGANIZACION DEBO PRODUCIR MAYOR CANTIDAD DEL PRODUCTO        
+
+        let prompedidosxPeriodo = (demanda/qOptima).toFixed(4)
+
+        //  DETERMINACION DE PUNTO DE NUEVO PEDIDO
+        let tiempoCicloOptimo = (qOptima/demanda).toFixed(4)
+        let tiempoProduccionPrevia = (qOptima/tasaProduccion).toFixed(4)
+        let puntoNuevoPedido = (tiempoGuia * demanda).toFixed(4)
+
         var arrayItem = {
           tasaProduccion: tasaProduccion,
           demanda: demanda,
           cantidadProduccion: cantidadProduccion,
-          // tiempoGuia: tiempoGuia,
-          // costoOrganizacionK: costoOrganizacionK,
+          tiempoGuia: tiempoGuia,
+          costoOrganizacionK: costoOrganizacionK,
           valorProducto: valorProducto,
           tasaTransferencia: tasaTransferencia,
           costoConservacionH: costoConservacionH,
           tiempoCiclo: tiempoCiclo,
-          // costoOrganizacionMes: costoOrganizacionMes,
+          costoOrganizacionMes: costoOrganizacionMes,
           costoConservacionMes: costoConservacionMes,
-          // constoMensualTotal: constoMensualTotal
+          constoMensualTotal: constoMensualTotal,
+          valMaxInventario: valMaxInventario,
+          qOptima: qOptima,
+          prompedidosxPeriodo: prompedidosxPeriodo,
+          tiempoCicloOptimo: tiempoCicloOptimo,
+          tiempoProduccionPrevia: tiempoProduccionPrevia,
+          puntoNuevoPedido: puntoNuevoPedido
         }
         return arrayItem;
       }
