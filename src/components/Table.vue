@@ -164,11 +164,13 @@ import {datos_temporada_valle, datos_temporada_alta} from '../constants/datos2'
         if (dataRandom >= (7/12)) {
           this.array = this.arrayTasaProduccionValle
           this.tasaTranferencia_i = 1.01
-          this.costoOrganizacion_k = 11200000
+          // this.costoOrganizacion_k = 11200000      original
+          this.costoOrganizacion_k = 1000000 // ajuste
         } else {
           this.array = this.arrayTasaProduccionAlta
           this.tasaTranferencia_i = 1.02
-          this.costoOrganizacion_k = 12600000
+          // this.costoOrganizacion_k = 12600000  original
+          this.costoOrganizacion_k = 1600000
         }
       },
       getDataRandom() {
@@ -226,17 +228,17 @@ import {datos_temporada_valle, datos_temporada_alta} from '../constants/datos2'
         let cantidadProduccion = (cantidadProduccion_ * 24).toFixed(4)
 
 
-        let tiempoGuia = 0.87  // PREGUNTAR --------------->>>
+        let tiempoGuia = 0.3043  // meses por produccion
         let costoOrganizacionK = this.costoOrganizacion_k// PREGUNTAR         
-        let valorProducto = 200 
+        let valorProducto = 100 
         let tasaTransferencia = this.tasaTranferencia_i // SEGURO?
         let costoConservacionH = tasaTransferencia * valorProducto // POR ITEM AL MES        
-        let tiempoCiclo = (cantidadProduccion/tasaProduccion).toFixed(4) // T = Q/D        
-        let valMaxInventario = (tasaProduccion - demanda) * tiempoCiclo // 2. (P-D)*Q/P // no se muestra en la tabla        
+        let tiempoCiclo = (cantidadProduccion/demanda).toFixed(4) // T = Q/D        
+        let valMaxInventario = (tasaProduccion - demanda) * (cantidadProduccion/tasaProduccion) // 2. (P-D)*Q/P // no se muestra en la tabla        
 
         let costoOrganizacionMes = Math.round( costoOrganizacionK * (demanda/cantidadProduccion) )  // costo de organizacion mensual = (K * D/Q)        
         let costoConservacionMes =  ( (valMaxInventario/2) * costoConservacionH ).toFixed(4) // costo de conservacion mensual = (inventario promedio * costoConservacionH)
-        let constoMensualTotal = Math.round( costoOrganizacionMes * costoConservacionMes )
+        let constoMensualTotal = Math.round( costoOrganizacionMes + costoConservacionMes )
 
 
 
