@@ -203,8 +203,8 @@ import {datos_temporada_valle,datos_temporada_alta} from '../constants/datos2'
         var costo = costopromedio * 12
         var mantenimiento = 250000
         var lead = 1
-        this.eoq = Math.sqrt((2*demanda*costo)/mantenimiento);
-        this.rop =  demanda_dia*lead;
+        this.eoq = Math.sqrt((2*demanda*costo)/mantenimiento).toFixed(1);
+        this.rop =  (demanda_dia*lead).toFixed(1);
 
       }
     }
