@@ -1,16 +1,19 @@
 <template>
   <v-app>
-    <Form/>
+    <EOQ/>
+    <Table/>
   </v-app>
 </template>
 
 <script>
-import Form from './components/Form'
+import EOQ from './components/EOQ'
+import Table from './components/Table'
 
 export default {
   name: 'App',
-  components: {
-    Form
+  components: {    
+    Table,
+    EOQ
   },
   data () {
     return {
